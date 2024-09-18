@@ -1,0 +1,20 @@
+Path/info,VRAM adress,ProcessWTE address,note
+1025 in dungeon pack,0x400,overlay_29::022eda20,
+1007-1011 in dungeon pack,0x0,overlay_29::02336200,which one is loaded depend on langage
+1031 in dungeon pack,0xB000,overlay_29::023394e4,
+1005 in dungeon pack,0xD000,overlay_29::023394e4,
+1001 in dungeon pack,0xF000,overlay_29::023394e4,
+1003 in dungeon pack,0xB000,overlay_29::023395f8,"seems to conflict with 1031. Both are fogs texture, so it might just replace the previous one"
+some between 1012 to 1020 in dungeon pack,0x1000,overlay_29::0233614c,
+either c_wipe.wte or w_wipe2.wte,???,0x0206afb0,
+w_heart.wte,???,0x0206b000,
+circle.wte,???,0x0206b050,
+s13p01t1.wte,0x8000,overlay_11::02316d4c,
+d04p31t1.wte,0x0,overlay_11::02314b9c,
+v15p03t1.wte,0x0,overlay_11::02314d20,
+p03p01t1.wte,0x0,overlay_11::02314eec,
+frameX.wte (where X is from 0 to 4),0x1F000,0x202740000,
+t01p01t1.wte,0x0,overlay_11::022f3368,WEATHER 1
+t01p01t2.wte,0x4000,overlay_11::022f3394,WEATHER 1
+p03p01t1.wte,0x0,overlay_11::022f33d8,WEATHER 3
+d73p41t1.wte,0x0,overlay_11::022f341c,WEATHER 2

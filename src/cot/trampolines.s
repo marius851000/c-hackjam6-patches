@@ -76,3 +76,40 @@ move_effect_input:
   .word 0
 move_effect_input_out_dealt_damage:
   .word 0
+
+.align 4
+cotInternalTrampolineApplyMoveEffectExtracted:
+  // register backup
+  push {r0-r9, r11, r12}
+
+  // TODO: check that move effect struct later
+
+  ldr r10, =move_effect_input
+  str r6, [r10] // move effect
+
+  // unsure about item id...
+
+  mov r0, #0
+  str r0, [r10, #0x8] // out_dealt_damage
+
+
+
+  // call the hook function
+  mov r0, r10
+  // attacker is r9
+  // move is r8
+  mov r1, r9 // attacker (I think)
+  mov r2, r4 // defenser (I think)
+  mov r3, r8 // move (I think)
+  bl cotInternalDispatchApplyMoveEffect
+
+  cmp r0, #1
+  pop {r0-r9, r11, r12}
+
+  // Not 100% sure r10 is the good output
+  ldreq r10, =move_effect_input_out_dealt_damage
+  beq ApplyMoveEffectHookAddrExtractedOnSucess
+  
+  // the original replaced function
+  stmdb  r13!,{r5,r7,r8}
+  b ApplyMoveEffectHookAddrExtracted+4

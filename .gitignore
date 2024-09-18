@@ -9,3 +9,7 @@ out.asm
 *.nds.skytemple
 
 symbols/generated_*.ld
+
+temp_rom_folder/
+fs_patch_temp/
+vid/

@@ -7,8 +7,10 @@
 .close 
 
 .open "overlay29.bin", overlay29_start
-  .org ApplyItemEffectHookAddr
-    b cotInternalTrampolineApplyItemEffect
-  .org ApplyMoveEffectHookAddr
-    b cotInternalTrampolineApplyMoveEffect
+  //.org ApplyItemEffectHookAddr
+    //b cotInternalTrampolineApplyItemEffect
+  //.org ApplyMoveEffectHookAddr
+    //b cotInternalTrampolineApplyMoveEffect
+  .org ApplyMoveEffectHookAddrExtracted
+    b cotInternalTrampolineApplyMoveEffectExtracted
 .close

@@ -46,7 +46,7 @@ export RANLIB   :=      $(PREFIX)gcc-ranlib
 #---------------------------------------------------------------------------------
 
 #             <-- Change to EU if required
-REGION := NA
+REGION := EU
 ROM := rom.nds
 ROM_OUT := out.nds
 
@@ -151,7 +151,7 @@ buildobjs:
 .PHONY: clean
 clean:
 	@echo clean ...
-	@rm -fr $(BUILD) $(TARGET).elf $(TARGET).bin $(TARGET).asm $(ROM_OUT).nds symbols/generated_*.ld
+	@rm -fr $(BUILD) $(TARGET).elf $(TARGET).bin $(TARGET).asm $(ROM_OUT).nds symbols/generated_*.ld rom_with_file.nds temp_rom_folder fs_patch_temp
  
 #---------------------------------------------------------------------------------
 else
@@ -179,9 +179,41 @@ endif
 symbols/generated_$(REGION).ld:
 	$(PYTHON) scripts/generate_linkerscript.py $(REGION)
 
+
+PRP_SRC = $(wildcard fs_patch_source/drawing/*.svg)
+PRP_DEST = $(patsubst fs_patch_source/drawing/%.svg,fs_patch_temp/CUSTOM/DRAWING/%.prp, $(PRP_SRC))
+
+fs_patch_temp/CUSTOM/DRAWING/%.prp: fs_patch_source/drawing/%.svg tool/drawing/convert2.py
+	mkdir -p fs_patch_temp/CUSTOM/DRAWING
+	python3 tool/drawing/convert2.py $< $@
+
+
+SCREEN_SRC = $(wildcard fs_patch_source/screen/*.png)
+SCREEN_DEST = $(patsubst fs_patch_source/screen/%.png,fs_patch_temp/CUSTOM/SCREEN/%.raw,$(SCREEN_SRC))
+
+fs_patch_temp/CUSTOM/SCREEN/%.raw: fs_patch_source/screen/%.png tool/display_image/convert.py
+	mkdir -p fs_patch_temp/CUSTOM/SCREEN
+	python3 tool/display_image/convert.py $< $@
+
+VRAM_SRC = $(wildcard fs_patch_source/vram/*.png)
+VRAM_DEST = $(patsubst fs_patch_source/vram/%.png,fs_patch_temp/CUSTOM/VRAM/%.wte,$(VRAM_SRC))
+
+fs_patch_temp/CUSTOM/VRAM/%.wte: fs_patch_source/vram/%.png tool/wte_convert/convert.py
+	mkdir -p fs_patch_temp/CUSTOM/VRAM
+	python3 tool/wte_convert/convert.py $< $@
+
+FS_PATCH_TEMP_INPUT = $(SCREEN_DEST) $(PRP_DEST) $(VRAM_DEST)
+
+rom_with_file.nds: $(FS_PATCH_TEMP_INPUT)
+	@rm -rf temp_rom_folder
+	mkdir -p temp_rom_folder
+	ndstool -x $(ROM) -9 temp_rom_folder/arm9.bin -7 temp_rom_folder/arm7.bin -y9 temp_rom_folder/y9.bin -y7 temp_rom_folder/y7.bin -d temp_rom_folder/data -y temp_rom_folder/overlay -t temp_rom_folder/banner.bin -h temp_rom_folder/header.bin
+	cp -r fs_patch_temp/* temp_rom_folder/data/
+	ndstool -c rom_with_file.nds -9 temp_rom_folder/arm9.bin -7 temp_rom_folder/arm7.bin -y9 temp_rom_folder/y9.bin -y7 temp_rom_folder/y7.bin -d temp_rom_folder/data -y temp_rom_folder/overlay -t temp_rom_folder/banner.bin -h $(ROM) -r9 0x2000000 -e9 0x2000800 -r7 0x2380000 -e7 0x2380000
+
 .PHONY: patch
-patch: build
-	$(PYTHON) scripts/patch.py $(REGION) $(ROM) $(OUTPUT).bin $(OUTPUT).elf $(ROM_OUT)
+patch: build rom_with_file.nds
+	$(PYTHON) scripts/patch.py $(REGION) rom_with_file.nds $(OUTPUT).bin $(OUTPUT).elf $(ROM_OUT)
 
 .PHONY: asmdump
 asmdump: build

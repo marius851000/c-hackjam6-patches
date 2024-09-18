@@ -1,0 +1,45 @@
+print("data reading started")
+
+/*function read_string_ten(offset)
+    buffer = memory.readbyterange(offset, 10)
+    result = ""
+    for key, char in ipairs(buffer) do
+        if char == 0 then
+            return result
+        else
+            result = result .. string.char(char)
+        end
+    end
+    return result
+end
+
+function first()
+    dungeon_ptr = memory.readlong(0x2353538)
+    dungeon_monster_list_ptr = dungeon_ptr + 0x12b28;
+    
+    for i=0, 3 do
+        monster_entity_ptr = memory.readlong(dungeon_monster_list_ptr+i*4)
+        monster_data_ptr = memory.readlong(monster_entity_ptr+0xB4)
+        print(monster_data_ptr)
+        monster_specie_id = memory.readshort(monster_data_ptr+2)
+        print(monster_specie_id)
+    end
+end*/
+
+while true do
+    print("loop");
+
+    /*pointer_some_stuff = memory.readlong(0x020b0a48)
+    second_pointer = memory.readlong(pointer_some_stuff + 0x984c)
+    
+    for i=0, 3 do
+        pointer_monster = second_pointer + 0x68*i
+        some_pointer = memory.readshort(pointer_monster+0xc)
+        print(some_pointer)
+    end*/
+
+    
+    
+    emu.frameadvance();
+end
+
